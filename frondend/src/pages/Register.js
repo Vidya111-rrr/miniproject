@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import styles for react-toastify
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -14,6 +16,14 @@ const Register = () => {
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
+      toast.error('Passwords do not match!', {
+        position: "top-center", // Display at the top-center of the screen
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
       return;
     }
 
@@ -31,14 +41,48 @@ const Register = () => {
 
       if (response.ok) {
         console.log('Registration successful:', data);
-        navigate('/login'); // Navigate to login page upon successful registration
+        
+        // Show success toast notification with green checkmark
+        toast.success('Registration successful! 🎉', {
+          position: "top-center", // Display at the top-center of the screen
+          autoClose: 300,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
+
+        // Navigate to the login page after a short delay
+        setTimeout(() => {
+          navigate('/login'); // Redirect to the login page
+        }, 1000); // Delay for 1 seconds to allow user to see the toast
       } else {
         console.error('Registration failed:', data.message);
         setError(data.message || 'Registration failed. Please try again.');
+
+        // Show failure toast notification with X mark
+        toast.error(data.message || 'Registration failed. Please try again.', {
+          position: "top-center", // Display at the top-center of the screen
+          autoClose: 200,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch (err) {
       console.error('An error occurred during registration:', err);
       setError('An error occurred. Please try again later.');
+
+      // Show failure toast notification with X mark
+      toast.error('An error occurred. Please try again later.', {
+        position: "top-center", // Display at the top-center of the screen
+        autoClose: 200,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
 
@@ -76,6 +120,9 @@ const Register = () => {
         {error && <p className="error">{error}</p>}
         <button type="submit">Register</button>
       </form>
+
+      {/* Toast container for notifications */}
+      <ToastContainer />
     </div>
   );
 };

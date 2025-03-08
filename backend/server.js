@@ -19,8 +19,9 @@ const JWT_SECRET = "vidyaep";
 app.use(cors({
   origin: 'http://localhost:3000', // React front-end URL
   methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
+  allowedHeaders: ['Content-Type', 'Authorization'], // Add 'Authorization' here
 }));
+
 app.use(express.json()); // To parse JSON bodies
 
 // MongoDB Connection
@@ -109,9 +110,15 @@ app.post('/api/waste-collection', async (req, res) => {
     res.status(201).json({ message: 'Waste collection data submitted successfully' });
   } catch (err) {
     console.error('Error saving waste collection data:', err);
+
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ message: err.message }); // Send specific validation error messages
+    }
+
     res.status(500).json({ message: 'Error submitting waste collection data' });
   }
 });
+
 
 // GET Route to retrieve waste collection data
 app.get('/api/waste-collection', async (req, res) => {
