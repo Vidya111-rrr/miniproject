@@ -1,0 +1,45 @@
+.recycler-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 50px auto;
+  padding: 20px;
+  max-width: 1200px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.recycler-container h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.recycler-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.recycler-table th, .recycler-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.recycler-table th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.recycler-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.recycler-table tr:hover {
+  background-color: #ddd;
+}

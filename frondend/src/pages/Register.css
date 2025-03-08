@@ -1,0 +1,66 @@
+.login-container,
+.register-container {
+  width: 90%; /* Ensures responsiveness */
+  max-width: 400px; /* Prevents it from becoming too large */
+  margin: 30px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+/* Improve form readability */
+form label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+form button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #45a049;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 480px) {
+  .login-container,
+  .register-container {
+    width: 95%;
+    padding: 15px;
+    margin: 20px auto;
+  }
+
+  form input {
+    padding: 12px;
+    font-size: 1rem;
+  }
+
+  form button {
+    padding: 14px;
+    font-size: 1.1rem;
+  }
+}
+
+
+
+

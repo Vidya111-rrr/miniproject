@@ -1,0 +1,108 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .selection-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%; /* Better for responsiveness */
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .selection-container h1 {
+    font-size: 2em; /* Reduced for better mobile fit */
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .selection-cards {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap; /* Allows wrapping on small screens */
+    width: 100%;
+  }
+  
+  .selection-card {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+    flex: 1 1 45%; /* Flexible width */
+    max-width: 400px; /* Prevents cards from getting too large */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .selection-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .selection-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .selection-card p {
+    font-size: 1em;
+    color: #666;
+  }
+  
+  .selection-card button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+  }
+  
+  .selection-card button:hover {
+    background-color: #45a049;
+  }
+  
+  /* 📱 Mobile Responsive Fix */
+  @media screen and (max-width: 768px) {
+    .selection-container {
+      width: 95%;
+      padding: 15px;
+    }
+  
+    .selection-container h1 {
+      font-size: 1.8em;
+    }
+  
+    .selection-cards {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .selection-card {
+      flex: 1 1 90%; /* Cards take full width */
+      max-width: 100%;
+    }
+  
+    .selection-card button {
+      width: 100%;
+      padding: 12px;
+    }
+  }

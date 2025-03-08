@@ -1,0 +1,122 @@
+.App {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: url("D:\React project\first-project\public\images\back.jpg"); /* Fixed path */
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .content {
+    flex: 1;
+    padding-bottom: 50px; /* Prevents footer overlap */
+  }
+  
+  /* ✅ Responsive Header */
+  .header {
+    background-color: rgba(76, 175, 80, 0.8);
+    padding: 10px;
+  }
+  
+  .header ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on mobile */
+    justify-content: center;
+  }
+  
+  .header li {
+    margin: 5px 10px;
+  }
+  
+  .header a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .header a:hover {
+    text-decoration: underline;
+  }
+  
+  /* ✅ Responsive Containers */
+  .home-container, .login-container, .register-container {
+    width: 90%; /* Ensures good mobile fit */
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .home-container h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  
+  .home-container p {
+    font-size: 1.2em;
+  }
+  
+  /* ✅ Responsive Forms */
+  form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  form button:hover {
+    background-color: #45a049;
+  }
+  
+  /* ✅ Footer Fix */
+  .footer {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  .footer p {
+    margin: 0;
+  }
+  
+  /* 📱 Mobile-Specific Styles */
+  @media screen and (max-width: 768px) {
+    .home-container h1 {
+      font-size: 1.8em;
+    }
+  
+    .header ul {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .header li {
+      margin-bottom: 5px;
+    }
+  }

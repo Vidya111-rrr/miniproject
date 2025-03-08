@@ -1,0 +1,34 @@
+.confirmation-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 50px auto;
+    padding: 20px;
+    max-width: 600px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+  
+  .confirmation-container h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .confirmation-details {
+    font-size: 1.2em;
+    color: #666;
+  }
+  
+  .confirmation-details ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .confirmation-details li {
+    margin-bottom: 10px;
+  } 
