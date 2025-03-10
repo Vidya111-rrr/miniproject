@@ -9,6 +9,7 @@ import Selection from './pages/Selection';
 import WasteCollectionForm from './pages/WasteCollectionForm';
 import RecyclingServices from './pages/RecyclingServicesForm';
 import ConfirmationPage from './pages/ConfirmationPage';
+import Store from './pages/Store';
 import './App.css';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path="/WasteCollectionForm" element={<WasteCollectionForm />} />
             <Route path="/recyclingservicesform" element={<RecyclingServices />} />
             <Route path="/confirmation" element={<ConfirmationPage />} />
+            <Route path="/store" element={<Store />} />  {/* Added Store Page */}
           </Routes>
         </div>
         <Footer />

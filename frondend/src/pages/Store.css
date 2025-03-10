@@ -1,0 +1,123 @@
+.store-container {
+    text-align: center;
+    padding: 80px 40px 40px;
+    background-color: #f4f4f4;
+    min-height: 100vh;
+  }
+  
+  .store-title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Search & Filter */
+  .store-controls {
+    display: flex;
+    justify-content: space-between;
+    max-width: 600px;
+    margin: 0 auto 20px;
+  }
+  
+  .search-bar {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .filter-button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 10px;
+    transition: background 0.3s;
+  }
+  
+  .filter-button:hover {
+    background-color: #2980b9;
+  }
+  
+  /* Product Grid */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  @media (min-width: 1024px) {
+    .product-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .product-grid {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+  
+  /* Filter Panel */
+  .filter-panel {
+    position: fixed;
+    right: -300px;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: right 0.3s ease-in-out;
+  }
+  
+  .filter-panel.open {
+    right: 0;
+  }
+  
+  .close-filter {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    float: right;
+  }
+  
+  .filter-panel label {
+    display: block;
+    margin: 10px 0 5px;
+  }
+  
+  .filter-panel input,
+  .filter-panel select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .reset-button {
+    background: #e74c3c;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  
+  .reset-button:hover {
+    background: #c0392b;
+  }
+  
