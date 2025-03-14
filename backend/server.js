@@ -8,12 +8,21 @@ import User from './model/User.js'; // Create a User model for the database
 import WasteCollection from './model/WasteCollection.js'; // Import the WasteCollection model
 import Recycler from './model/RecyclingServices.js';
 
-dotenv.config();
+dotenv.config();  //used for storing sensitive datas 
+
+// remove this console loges after verifying data  in .env is printed in console 
 console.log("MONGO_URI:", process.env.MONGO_URI);
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
+console.log("PORT:", process.env.PORT);
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS:", process.env.EMAIL_PASS);
+console.log("EMAIL_HOST:", process.env.EMAIL_HOST);
+console.log("EMAIL_PORT:", process.env.EMAIL_PORT);
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const JWT_SECRET = "vidyaep";
+const JWT_SECRET = process.env.JWT_SECRET;
+
 
 // Middleware
 app.use(cors({
@@ -25,7 +34,7 @@ app.use(cors({
 app.use(express.json()); // To parse JSON bodies
 
 // MongoDB Connection
-mongoose.connect("mongodb+srv://dhanyakrishnan284:RzHEJGGdt9umg7GK@cluster0.8sngv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
