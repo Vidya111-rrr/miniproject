@@ -42,7 +42,7 @@ body {
   font-size: 2em;
   margin-bottom: 20px;
   text-align: center;
-  color: #4CAF50;
+  color: hsl(122, 39%, 49%);
 }
 
 .service-cards {

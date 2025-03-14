@@ -4,7 +4,10 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Register from './pages/Register';
+import Register from "./pages/Register";
+import RegisterGenerator from "./pages/RegisterGenerator";
+import RegisterCollector from "./pages/RegisterCollector";
+
 import Selection from './pages/Selection';
 import WasteCollectionForm from './pages/WasteCollectionForm';
 import RecyclingServices from './pages/RecyclingServicesForm';
@@ -23,7 +26,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login userCredentials={userCredentials} />} />
-            <Route path="/register" element={<Register setUserCredentials={setUserCredentials} />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/registergenerator" element={<RegisterGenerator setUserCredentials={setUserCredentials} />} />
+            <Route path="/registercollector" element={<RegisterCollector setUserCredentials={setUserCredentials} />} />
             <Route path="/selection" element={<Selection />} />
             <Route path="/WasteCollectionForm" element={<WasteCollectionForm />} />
             <Route path="/recyclingservicesform" element={<RecyclingServices />} />
