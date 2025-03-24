@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './WasteCollectionForm.css';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import styles for react-toastify
+import 'react-toastify/dist/ReactToastify.css';
 
 const WasteCollectionForm = () => {
   const navigate = useNavigate();
@@ -13,25 +12,57 @@ const WasteCollectionForm = () => {
     email: '',
     address: '',
     phone: '',
-    wasteCategory: '',
-    wasteAmount: ''
+    wasteCategories: [
+      { category: '', amount: '' },
+    ],
   });
 
-  // State for error and success messages
-  const [error, setError] = useState(null);
-
-  // Handle input change
-  const handleChange = (e) => {
+  // Handle input change for dynamic waste categories
+  const handleCategoryChange = (index, e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const updatedWasteCategories = [...formData.wasteCategories];
+    updatedWasteCategories[index] = { ...updatedWasteCategories[index], [name]: value };
+    setFormData({ ...formData, wasteCategories: updatedWasteCategories });
+  };
+
+  // Add new waste category entry
+  const handleAddWasteCategory = () => {
+    setFormData({
+      ...formData,
+      wasteCategories: [
+        ...formData.wasteCategories,
+        { category: '', amount: '' },
+      ],
+    });
+  };
+
+  // Remove a waste category entry
+  const handleRemoveWasteCategory = (index) => {
+    const updatedWasteCategories = formData.wasteCategories.filter((_, i) => i !== index);
+    setFormData({ ...formData, wasteCategories: updatedWasteCategories });
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate waste categories
+    for (let i = 0; i < formData.wasteCategories.length; i++) {
+      const category = formData.wasteCategories[i];
+      if (!category.category || !category.amount) {
+        toast.error('Please fill all waste category fields with valid data.', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+        });
+        return;
+      }
+    }
+
     try {
-      const response = await fetch('http://localhost:4000/api/waste-collection', {
+      const response = await fetch('http://localhost:4001/api/waste-collection', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,13 +75,12 @@ const WasteCollectionForm = () => {
       }
 
       // Show success message with green check mark
-      toast.success('Waste collection data submitted successfully! ✔️', {
-        position: "top-right",
+      toast.success('Waste collection data submitted successfully! ✔', {
+        position: 'top-right',
         autoClose: 5000,
         hideProgressBar: true,
         closeOnClick: true,
         draggable: true,
-        progress: undefined,
       });
 
       // Clear form data
@@ -59,98 +89,134 @@ const WasteCollectionForm = () => {
         email: '',
         address: '',
         phone: '',
-        wasteCategory: '',
-        wasteAmount: '',
+        wasteCategories: [{ category: '', amount: '' }],
       });
     } catch (err) {
-      setError(err.message);
-      console.error('Error submitting waste collection data:', err);
       toast.error(`Error: ${err.message}`, {
-        position: "top-right",
+        position: 'top-right',
         autoClose: 5000,
         hideProgressBar: true,
         closeOnClick: true,
         draggable: true,
-        progress: undefined,
       });
     }
   };
 
   return (
-    <div className="form-container">
-      <h1>Waste Collection Form</h1>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+        <h1 className="text-3xl font-semibold text-gray-800 mb-6">Waste Collection Form</h1>
 
-      {/* Error Message */}
-      {error && <p className="error-message">{error}</p>}
+        {/* Waste Collection Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="name" className="block text-gray-700 font-semibold mb-2">Name</label>
+            <input
+              id="name"
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+          </div>
 
-      {/* Waste Collection Form */}
-      <form onSubmit={handleSubmit}>
-        <label>Name</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
+          <div>
+            <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">Email</label>
+            <input
+              id="email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+          </div>
 
-        <label>Email</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
+          <div>
+            <label htmlFor="address" className="block text-gray-700 font-semibold mb-2">Address</label>
+            <input
+              id="address"
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+          </div>
 
-        <label>Address</label>
-        <input
-          type="text"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          required
-        />
+          <div>
+            <label htmlFor="phone" className="block text-gray-700 font-semibold mb-2">Phone</label>
+            <input
+              id="phone"
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+          </div>
 
-        <label>Phone</label>
-        <input
-          type="text"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-        />
+          {/* Waste Categories - Dynamic Add/Remove */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">Waste Categories</label>
+            {formData.wasteCategories.map((entry, index) => (
+              <div key={index} className="flex items-center gap-4 mb-4">
+                <select
+                  name="category"
+                  value={entry.category}
+                  onChange={(e) => handleCategoryChange(index, e)}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
+                >
+                  <option value="" disabled>Select Waste Category</option>
+                  <option value="Plastic">Plastic</option>
+                  <option value="Glass">Glass</option>
+                  <option value="Metal">Metal</option>
+                  <option value="Organic">Organic</option>
+                </select>
+                <input
+                  type="number"
+                  name="amount"
+                  value={entry.amount}
+                  onChange={(e) => handleCategoryChange(index, e)}
+                  placeholder="Amount (kg)"
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveWasteCategory(index)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-md"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={handleAddWasteCategory}
+              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            >
+              Add More
+            </button>
+          </div>
 
-        <label>Waste Category</label>
-        <select
-          name="wasteCategory"
-          value={formData.wasteCategory}
-          onChange={handleChange}
-          required
-        >
-          <option value=""> </option>
-          <option value="Plastic">Plastic</option>
-          <option value="Paper">Paper</option>
-          <option value="Glass">Glass</option>
-          <option value="Metal">Metal</option>
-          <option value="Organic">Organic</option>
-          <option value="Other">Other</option>
-        </select>
+          <button
+            type="submit"
+            className="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+          >
+            Submit
+          </button>
+        </form>
 
-        <label>Waste Amount (kg)</label>
-        <input
-          type="number"
-          name="wasteAmount"
-          value={formData.wasteAmount}
-          onChange={handleChange}
-          required
-        />
-
-        <button type="submit">Submit</button>
-      </form>
-
-      {/* Toast container for notifications */}
-      <ToastContainer />
+        {/* Toast container for notifications */}
+        <ToastContainer />
+      </div>
     </div>
   );
 };

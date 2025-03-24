@@ -1,25 +1,59 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
+  // Handle Input Change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  // Handle Login Submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("User Logged In:", formData);
-    alert("Login Successful!");
+
+    try {
+      const response = await fetch("http://localhost:4000/api/login", { // ✅ Correct API URL
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Invalid credentials");
+      }
+
+      const data = await response.json();
+      //localStorage.setItem("userRole", data.role); // ✅ Save user role
+
+      // Redirect based on user role
+      //if (data.role === "collector") {
+       // navigate("/recyclingservicesform");
+      //} else if (data.role === "generator") {
+        //navigate("/wastecollectionform");
+      //} else {
+        //throw new Error("Unknown role");
+      //}
+      navigate("/recyclingservicesform");
+      alert("Login Successful!");
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-green-700 to-green-400">
       <div className="bg-white p-8 rounded-xl shadow-lg w-96 animate-fade-in">
         <h2 className="text-3xl font-bold text-center mb-6 text-green-700">Login</h2>
+
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email Input */}
           <div>
@@ -52,7 +86,10 @@ const Login = () => {
           </div>
 
           {/* Login Button */}
-          <button className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-all">
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-all"
+          >
             Login
           </button>
         </form>
