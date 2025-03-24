@@ -88,26 +88,84 @@ const RecyclerPage = () => {
 
   // Handle Buy Button Click
   const handleBuyClick = (entry) => {
+    const token = localStorage.getItem('token');
+    console.log('Token when Buy is pressed:', token); // Print the token to the console
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        console.log('Decoded Token Payload:', payload); // Print the decoded token payload
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    } else {
+      console.log('No token found in localStorage');
+    }
     setSelectedEntry(entry);
     setShowBidPopup(true);
   };
 
   // Handle Bid Submission
-  const handleBidSubmit = (e) => {
+  const handleBidSubmit = async (e) => {
     e.preventDefault();
     if (!bidAmount || bidAmount <= 0) {
       alert('Please enter a valid bid amount.');
       return;
     }
 
-    console.log('Bid Request:', {
-      entry: selectedEntry,
-      bidAmount: parseFloat(bidAmount),
-    });
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('You must be logged in to submit a bid.');
+        setShowBidPopup(false);
+        return;
+      }
 
-    setShowBidPopup(false);
-    setBidAmount('');
-    alert('Bid request submitted successfully!');
+      // Decode the token to get bidder email
+      let bidderEmail;
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        bidderEmail = payload.username; // The username field in the token is the email
+        if (!bidderEmail) {
+          throw new Error('Token does not contain bidder email.');
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        alert('Invalid token. Please log in again.');
+        setShowBidPopup(false);
+        return;
+      }
+
+      // Prepare the bid data
+      const bidData = {
+        bidAmount: parseFloat(bidAmount),
+        wasteId: selectedEntry._id, // From the table
+        bidderEmail, // From the token
+        sellerEmail: selectedEntry.email, // From the table
+      };
+
+      console.log('Bid Data being sent:', bidData); // Debug: Log the bid data
+
+      const response = await fetch('http://localhost:4000/api/bids', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bidData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        setShowBidPopup(false);
+        setBidAmount('');
+        alert('Bid request submitted successfully!');
+      } else {
+        alert(result.message || 'Failed to submit bid.');
+      }
+    } catch (error) {
+      console.error('Error submitting bid:', error);
+      alert('Server error. Please try again later.');
+    }
   };
 
   // Pagination Logic
@@ -141,6 +199,8 @@ const RecyclerPage = () => {
           <h1 className="text-xl md:text-2xl font-bold font-poppins">EcoSync</h1>
           <nav className="flex space-x-4">
             <Link to="/" className="hover:underline text-base md:text-lg font-roboto">Home</Link>
+            <Link to="/recycler" className="hover:underline text-base md:text-lg font-roboto">Recycler</Link>
+            <Link to="/bids" className="hover:underline text-base md:text-lg font-roboto">My Bids</Link>
             <Link to="/login" className="hover:underline text-base md:text-lg font-roboto">Login</Link>
             <Link to="/register" className="hover:underline text-base md:text-lg font-roboto">Register</Link>
           </nav>
