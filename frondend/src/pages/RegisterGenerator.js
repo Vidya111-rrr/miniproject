@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const RegisterGenerator = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     generatorId: generateGeneratorId(),
     username: "",
@@ -10,18 +12,15 @@ const RegisterGenerator = () => {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  // Function to generate a 4-digit Generator ID (Gxxx format)
   function generateGeneratorId() {
-    return `G${Math.floor(100 + Math.random() * 900)}`; // Generates a random 3-digit number and appends 'G'
+    return `G${Math.floor(100 + Math.random() * 900)}`;
   }
 
-  // Username validation (at least 5 chars, only letters, numbers, underscores, cannot start with a number)
   const validateUsername = (username) => {
     const usernameRegex = /^(?!\d)[a-zA-Z0-9_]{5,}$/;
     return usernameRegex.test(username);
   };
 
-  // Password validation (8+ chars, uppercase, lowercase, number, special char)
   const validatePassword = (password) => {
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return strongPasswordRegex.test(password);
@@ -49,6 +48,7 @@ const RegisterGenerator = () => {
     if (!usernameError && !passwordError && formData.username && formData.password) {
       console.log("Generator Registered:", formData);
       alert(`Registration Successful! Your Generator ID: ${formData.generatorId}`);
+      navigate("/login"); // Navigate to login page
     } else {
       alert("Please fix errors before submitting.");
     }
@@ -59,7 +59,6 @@ const RegisterGenerator = () => {
       <div className="bg-white p-8 rounded-xl shadow-lg w-96">
         <h2 className="text-2xl font-bold text-center mb-4 text-green-700">Register as Generator</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Generator ID (Read-Only) */}
           <input
             type="text"
             name="generatorId"

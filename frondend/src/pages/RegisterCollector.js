@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const RegisterCollector = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     collectorId: generateCollectorId(),
     name: "",
@@ -10,9 +12,8 @@ const RegisterCollector = () => {
   });
   const [passwordError, setPasswordError] = useState("");
 
-  // Function to generate a 4-digit Collector ID (Cxxx format)
   function generateCollectorId() {
-    return `C${Math.floor(100 + Math.random() * 900)}`; // Generates a random 3-digit number and appends 'C'
+    return `C${Math.floor(100 + Math.random() * 900)}`;
   }
 
   const validatePassword = (password) => {
@@ -36,6 +37,7 @@ const RegisterCollector = () => {
     if (!passwordError && formData.password) {
       console.log("Collector Registered:", formData);
       alert(`Registration Successful! Your Collector ID: ${formData.collectorId}`);
+      navigate("/login"); // Navigate to login page
     } else {
       alert("Please fix password issues.");
     }
@@ -46,7 +48,6 @@ const RegisterCollector = () => {
       <div className="bg-white p-8 rounded-xl shadow-lg w-96">
         <h2 className="text-2xl font-bold text-center mb-4 text-green-700">Register as Collector</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Collector ID (Read-Only) */}
           <input
             type="text"
             name="collectorId"
