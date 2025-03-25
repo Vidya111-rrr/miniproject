@@ -87,12 +87,69 @@ const BidsPage = () => {
     fetchData();
   }, [userEmail]);
 
-  // Handle Accept Bid (placeholder)
-  const handleAcceptBid = (bidId) => {
-    // Placeholder: In a real app, this would make a POST request to accept the bid
-    alert(`Accepted bid with ID: ${bidId}`);
-    // Optionally, refresh bids after accepting
-    // setBids(bids.filter((bid) => bid._id !== bidId));
+  // Handle Accept Bid
+  const handleAcceptBid = async (bidId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('You must be logged in to accept a bid.');
+        navigate('/login');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:4000/api/waste-collection/accept-bid/${bidId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, // Include the token for authentication
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (response.status === 401) {
+          setError('Session expired. Please log in again.');
+          localStorage.removeItem('token');
+          navigate('/login');
+          return;
+        }
+        throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      alert(result.message); // Show success message
+
+      // Refresh bids and pending wastes
+      const bidsResponse = await fetch('http://localhost:4000/api/bids/test', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (bidsResponse.ok) {
+        const bidsData = await bidsResponse.json();
+        const userBids = bidsData.filter((bid) => bid.sellerEmail === userEmail);
+        setBids(userBids);
+      }
+
+      const wasteResponse = await fetch('http://localhost:4000/api/waste-collection', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (wasteResponse.ok) {
+        const wasteData = await wasteResponse.json();
+        const userWastes = wasteData.filter((waste) => waste.email === userEmail);
+        const bidWasteIds = bidsData.map((bid) => bid.wasteId._id);
+        const pending = userWastes.filter((waste) => !bidWasteIds.includes(waste._id));
+        setPendingWastes(pending);
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to accept bid.');
+    }
   };
 
   // Sort bids by price
@@ -145,9 +202,17 @@ const BidsPage = () => {
             <p className="text-center text-gray-700 font-roboto text-lg">Loading data...</p>
           )}
           {error && (
-            <p className="text-center bg-red-100 text-red-700 p-4 rounded-lg font-roboto text-lg">
-              {error}
-            </p>
+            <div className="text-center bg-red-100 text-red-700 p-4 rounded-lg font-roboto text-lg">
+              <p>{error}</p>
+              {error.includes('log in') && (
+                <button
+                  onClick={() => navigate('/login')}
+                  className="mt-2 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                >
+                  Log In Again
+                </button>
+              )}
+            </div>
           )}
 
           {/* Bids Section */}
