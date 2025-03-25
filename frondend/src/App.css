@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Sidebar and Content layout */
+/* App layout */
 .App {
   display: flex;
   flex-direction: column;
@@ -10,10 +10,13 @@
 }
 
 .content {
-  display: flex;
   flex: 1;
-  padding-left: 250px; /* Adjust for sidebar width */
   padding-bottom: 50px; /* Footer margin */
+}
+
+/* Sidebar layout (only applied when sidebar is present) */
+.with-sidebar .content {
+  padding-left: 250px; /* Adjust for sidebar width */
 }
 
 .sidebar {

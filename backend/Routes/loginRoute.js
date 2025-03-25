@@ -1,7 +1,9 @@
 import express from "express";
+import User from  "../model/User.js"
+import bcrypt from "bcryptjs"; // Import bcrypt for password comparison
+import jwt from "jsonwebtoken"; // Import jwt for token generation
 
 const router = express.Router();
-
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -21,20 +23,19 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    // Generate a JWT token
+    // Generate a JWT token with user role
     const token = jwt.sign(
-      { userId: user._id, username: user.username },
-      JWT_SECRET,
+      { userId: user._id, username: user.username, role: user.role },
+      process.env.JWT_SECRET, // Use environment variable for JWT secret
       { expiresIn: '1h' } // Token expiration time
     );
 
-    res.status(200).json({ message: 'Login successful', token });
+    // Send the token and role in the response
+    res.status(200).json({ message: 'Login successful', token, role: user.role });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-   export default router;
-
-  
+export default router;
