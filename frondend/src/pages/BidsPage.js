@@ -1,68 +1,120 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 
 const BidsPage = () => {
+  const navigate = useNavigate();
   const [bids, setBids] = useState([]);
+  const [pendingWastes, setPendingWastes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [sortOrder, setSortOrder] = useState('none'); // none, asc, desc
+  const [bidCategoryFilter, setBidCategoryFilter] = useState('all');
+  const [pendingCategoryFilter, setPendingCategoryFilter] = useState('all');
+  const [userEmail, setUserEmail] = useState(null);
 
+  // Fetch user email from token
   useEffect(() => {
-    const fetchBids = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('You must be logged in to view your bids.');
-        }
+    const token = localStorage.getItem('token');
+    console.log('Token from localStorage:', token); // Debug: Log the raw token
 
-        const response = await fetch('http://localhost:4000/api/bids?myBids=true', {
+    if (!token) {
+      setError('You must be logged in to view your bids.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode(token);
+      console.log('Decoded Token in Frontend:', decoded); // Debug: Log the decoded token
+      setUserEmail(decoded.username); // Assuming the token contains the email as 'username'
+    } catch (err) {
+      console.error('Token decoding error:', err); // Debug: Log the error
+      setError('Invalid token. Please log in again.');
+      setLoading(false);
+    }
+  }, []);
+
+  // Fetch bids and waste data
+  useEffect(() => {
+    if (!userEmail) return;
+
+    const fetchData = async () => {
+      try {
+        // Fetch all bids
+        const bidsResponse = await fetch('http://localhost:4000/api/bids/test', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
           },
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!bidsResponse.ok) {
+          throw new Error(`HTTP error! Status: ${bidsResponse.status}`);
         }
 
-        const result = await response.json();
-        console.log('Fetched Bids:', result); // Debug: Log the fetched bids
-        setBids(result);
+        const bidsData = await bidsResponse.json();
+        // Filter bids where sellerEmail matches the logged-in user's email
+        const userBids = bidsData.filter((bid) => bid.sellerEmail === userEmail);
+        setBids(userBids);
+
+        // Fetch all waste collections
+        const wasteResponse = await fetch('http://localhost:4000/api/waste-collection', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!wasteResponse.ok) {
+          throw new Error(`HTTP error! Status: ${wasteResponse.status}`);
+        }
+
+        const wasteData = await wasteResponse.json();
+        // Filter wastes belonging to the user (by email)
+        const userWastes = wasteData.filter((waste) => waste.email === userEmail);
+        // Find wastes that are not currently bid on
+        const bidWasteIds = bidsData.map((bid) => bid.wasteId._id);
+        const pending = userWastes.filter((waste) => !bidWasteIds.includes(waste._id));
+        setPendingWastes(pending);
       } catch (err) {
-        setError(err.message || 'Failed to fetch bids.');
+        setError(err.message || 'Failed to fetch data.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchBids();
-  }, []);
+    fetchData();
+  }, [userEmail]);
 
-  // Pagination Logic
-  const totalPages = Math.ceil(bids.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
-  const paginatedBids = bids.slice(startIndex, endIndex);
-
-  const handleRowsPerPageChange = (e) => {
-    setRowsPerPage(parseInt(e.target.value));
-    setCurrentPage(1); // Reset to first page
+  // Handle Accept Bid (placeholder)
+  const handleAcceptBid = (bidId) => {
+    // Placeholder: In a real app, this would make a POST request to accept the bid
+    alert(`Accepted bid with ID: ${bidId}`);
+    // Optionally, refresh bids after accepting
+    // setBids(bids.filter((bid) => bid._id !== bidId));
   };
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+  // Sort bids by price
+  const sortedBids = [...bids].sort((a, b) => {
+    if (sortOrder === 'asc') return a.bidAmount - b.bidAmount;
+    if (sortOrder === 'desc') return b.bidAmount - a.bidAmount;
+    return 0; // 'none' or default
+  });
 
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+  // Filter bids by category
+  const filteredBids = bidCategoryFilter === 'all'
+    ? sortedBids
+    : sortedBids.filter((bid) => bid.wasteId.wasteCategory === bidCategoryFilter);
+
+  // Filter pending wastes by category
+  const filteredPendingWastes = pendingCategoryFilter === 'all'
+    ? pendingWastes
+    : pendingWastes.filter((waste) => waste.wasteCategory === pendingCategoryFilter);
+
+  // Get unique categories for filtering
+  const bidCategories = ['all', ...new Set(bids.map((bid) => bid.wasteId.wasteCategory))];
+  const pendingCategories = ['all', ...new Set(pendingWastes.map((waste) => waste.wasteCategory))];
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -90,7 +142,7 @@ const BidsPage = () => {
 
           {/* Loading and Error Messages */}
           {loading && (
-            <p className="text-center text-gray-700 font-roboto text-lg">Loading bids...</p>
+            <p className="text-center text-gray-700 font-roboto text-lg">Loading data...</p>
           )}
           {error && (
             <p className="text-center bg-red-100 text-red-700 p-4 rounded-lg font-roboto text-lg">
@@ -98,98 +150,141 @@ const BidsPage = () => {
             </p>
           )}
 
-          {/* Table */}
+          {/* Bids Section */}
           {!loading && !error && (
             <>
-              <div className="overflow-x-auto">
-                <table className="w-full bg-white shadow-lg rounded-lg border border-gray-200">
-                  <thead>
-                    <tr className="bg-green-600 text-white">
-                      <th className="p-4 text-left font-roboto text-lg">Bid Amount ($)</th>
-                      <th className="p-4 text-left font-roboto text-lg">Bidder Email</th>
-                      <th className="p-4 text-left font-roboto text-lg">Seller Email</th>
-                      <th className="p-4 text-left font-roboto text-lg">Waste Collection Name</th>
-                      <th className="p-4 text-left font-roboto text-lg">Waste Category</th>
-                      <th className="p-4 text-left font-roboto text-lg">Waste Amount (kg)</th>
-                      <th className="p-4 text-left font-roboto text-lg">Address</th>
-                      <th className="p-4 text-left font-roboto text-lg">Phone</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginatedBids.length > 0 ? (
-                      paginatedBids.map((bid, index) => (
-                        <tr
-                          key={index}
-                          className="border-b hover:bg-gray-100 transition-all duration-200"
-                        >
-                          <td className="p-4 font-roboto text-base">{bid.bidAmount || 'N/A'}</td>
-                          <td className="p-4 font-roboto text-base">{bid.bidderEmail || 'N/A'}</td>
-                          <td className="p-4 font-roboto text-base">{bid.sellerEmail || 'N/A'}</td>
-                          <td className="p-4 font-roboto text-base">{bid.wasteId?.name || 'N/A'}</td>
-                          <td className="p-4 font-roboto text-base">{bid.wasteId?.wasteCategory || 'N/A'}</td>
-                          <td className="p-4 font-roboto text-base">{bid.wasteId?.wasteAmount || 'N/A'}</td>
-                          <td className="p-4 font-roboto text-base">{bid.wasteId?.address || 'N/A'}</td>
-                          <td className="p-4 font-roboto text-base">{bid.wasteId?.phone || 'N/A'}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td
-                          colSpan="8"
-                          className="p-4 text-center text-gray-700 font-roboto text-lg"
-                        >
-                          No bids available
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination Controls */}
-              <div className="mt-6 flex flex-col md:flex-row justify-between items-center">
-                {/* Rows Per Page Dropdown */}
-                <div className="mb-4 md:mb-0">
-                  <label className="mr-2 font-roboto text-base">Rows per page:</label>
+              {/* Sorting and Filtering Controls */}
+              <div className="mb-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex items-center gap-3">
+                  <label className="font-roboto text-base">Sort by Price:</label>
                   <select
-                    value={rowsPerPage}
-                    onChange={handleRowsPerPageChange}
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
                     className="p-2 border border-gray-300 rounded-lg font-roboto text-base"
                   >
-                    <option value={15}>15</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
+                    <option value="none">None</option>
+                    <option value="asc">Low to High</option>
+                    <option value="desc">High to Low</option>
                   </select>
                 </div>
-
-                {/* Page Navigation */}
-                <div className="flex space-x-2">
-                  <button
-                    onClick={handlePrevPage}
-                    disabled={currentPage === 1}
-                    className={`px-4 py-2 rounded-lg font-roboto text-base ${
-                      currentPage === 1
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-green-600 text-white hover:bg-green-700'
-                    } transition-all duration-300`}
+                <div className="flex items-center gap-3">
+                  <label className="font-roboto text-base">Filter by Category:</label>
+                  <select
+                    value={bidCategoryFilter}
+                    onChange={(e) => setBidCategoryFilter(e.target.value)}
+                    className="p-2 border border-gray-300 rounded-lg font-roboto text-base"
                   >
-                    Previous
-                  </button>
-                  <span className="px-4 py-2 font-roboto text-base">
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <button
-                    onClick={handleNextPage}
-                    disabled={currentPage === totalPages}
-                    className={`px-4 py-2 rounded-lg font-roboto text-base ${
-                      currentPage === totalPages
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-green-600 text-white hover:bg-green-700'
-                    } transition-all duration-300`}
-                  >
-                    Next
-                  </button>
+                    {bidCategories.map((category) => (
+                      <option key={category} value={category}>
+                        {category === 'all' ? 'All Categories' : category}
+                      </option>
+                    ))}
+                  </select>
                 </div>
+              </div>
+
+              {/* Bids Grid */}
+              <div className="mb-12">
+                <h2 className="text-2xl font-semibold text-green-600 mb-4 font-poppins">
+                  Received Bids
+                </h2>
+                {filteredBids.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredBids.map((bid) => (
+                      <div
+                        key={bid._id}
+                        className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-2">
+                          {bid.wasteId.name}'s Waste
+                        </h3>
+                        <p className="text-gray-700 font-roboto mb-1">
+                          <span className="font-semibold">Category:</span> {bid.wasteId.wasteCategory}
+                        </p>
+                        <p className="text-gray-700 font-roboto mb-1">
+                          <span className="font-semibold">Amount:</span> {bid.wasteId.wasteAmount} kg
+                        </p>
+                        <p className="text-gray-700 font-roboto mb-1">
+                          <span className="font-semibold">Address:</span> {bid.wasteId.address}
+                        </p>
+                        <p className="text-gray-700 font-roboto mb-1">
+                          <span className="font-semibold">Phone:</span> {bid.wasteId.phone}
+                        </p>
+                        <p className="text-gray-700 font-roboto mb-1">
+                          <span className="font-semibold">Bid Amount:</span> ${bid.bidAmount}
+                        </p>
+                        <p className="text-gray-700 font-roboto mb-3">
+                          <span className="font-semibold">Bidder:</span> {bid.bidderEmail}
+                        </p>
+                        <button
+                          onClick={() => handleAcceptBid(bid._id)}
+                          className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition-all duration-300 font-roboto"
+                        >
+                          Accept Bid
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-700 font-roboto text-lg">
+                    No bids received for your wastes.
+                  </p>
+                )}
+              </div>
+
+              {/* Pending Wastes Section */}
+              <div>
+                <h2 className="text-2xl font-semibold text-green-600 mb-4 font-poppins">
+                  Pending Wastes (Not Yet Bid On)
+                </h2>
+                {/* Filter Pending Wastes by Category */}
+                <div className="mb-4 flex items-center gap-3">
+                  <label className="font-roboto text-base">Filter by Category:</label>
+                  <select
+                    value={pendingCategoryFilter}
+                    onChange={(e) => setPendingCategoryFilter(e.target.value)}
+                    className="p-2 border border-gray-300 rounded-lg font-roboto text-base"
+                  >
+                    {pendingCategories.map((category) => (
+                      <option key={category} value={category}>
+                        {category === 'all' ? 'All Categories' : category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {filteredPendingWastes.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {filteredPendingWastes.map((waste) => (
+                      <div
+                        key={waste._id}
+                        className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                      >
+                        <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-2">
+                          {waste.name}'s Waste
+                        </h3>
+                        <p className="text-gray-700 font-roboto mb-1">
+                          <span className="font-semibold">Category:</span> {waste.wasteCategory}
+                        </p>
+                        <p className="text-gray-700 font-roboto mb-1">
+                          <span className="font-semibold">Amount:</span> {waste.wasteAmount} kg
+                        </p>
+                        <p className="text-gray-700 font-roboto mb-1">
+                          <span className="font-semibold">Address:</span> {waste.address}
+                        </p>
+                        <p className="text-gray-700 font-roboto mb-3">
+                          <span className="font-semibold">Phone:</span> {waste.phone}
+                        </p>
+                        <p className="text-gray-600 font-roboto italic">
+                          Status: Pending (No bids yet)
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-700 font-roboto text-lg">
+                    No pending wastes to display.
+                  </p>
+                )}
               </div>
             </>
           )}
