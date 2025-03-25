@@ -20,20 +20,15 @@ const wasteCollectionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    wasteCategories: {
-      type: [String], // ✅ Change from String to an array of Strings
+    wasteCategory: {
+      type: String,
       required: true,
       enum: ["Plastic", "Paper", "Glass", "Metal", "Organic", "Other"], // Allowed categories
     },
-    wasteAmounts: {
-      type: [Number], // ✅ Allow multiple amounts corresponding to each category
+    wasteAmount: {
+      type: Number,
       required: true,
-      validate: {
-        validator: function (values) {
-          return values.every((val) => val >= 0); // Ensure all values are non-negative
-        },
-        message: "Waste amount cannot be negative",
-      },
+      min: [0, "Waste amount cannot be negative"],
     },
   },
   {
