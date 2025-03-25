@@ -261,7 +261,7 @@ const BidsPage = () => {
                         className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-2">
-                          {bid.wasteId.name}'s Waste
+                          
                         </h3>
                         <p className="text-gray-700 font-roboto mb-1">
                           <span className="font-semibold">Category:</span> {bid.wasteId.wasteCategory}
@@ -325,7 +325,7 @@ const BidsPage = () => {
                         className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                       >
                         <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-2">
-                          {waste.name}'s Waste
+                          {/* heading */}
                         </h3>
                         <p className="text-gray-700 font-roboto mb-1">
                           <span className="font-semibold">Category:</span> {waste.wasteCategory}
