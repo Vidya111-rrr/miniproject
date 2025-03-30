@@ -8,10 +8,7 @@
     "ajv-keywords": "^5.1.0",
     "cors": "^2.8.5",
     "framer-motion": "^12.5.0",
-<<<<<<< HEAD
-=======
     "jwt-decode": "^4.0.0",
->>>>>>> f9db2ba7e528f7170cdbfb46b899a75bfa146c0d
     "lucide-react": "^0.479.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

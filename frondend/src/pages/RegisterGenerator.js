@@ -1,14 +1,9 @@
 import { useState } from "react";
-<<<<<<< HEAD
-import { useNavigate } from "react-router-dom";
-=======
 import { Link, useNavigate } from "react-router-dom";
 import eWasteGraphic from "../assets/e-waste-graphic.png";
 import eWasteBin from "../assets/e-waste-bin.png";
->>>>>>> f9db2ba7e528f7170cdbfb46b899a75bfa146c0d
 
 const RegisterGenerator = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,18 +15,6 @@ const RegisterGenerator = () => {
   const [success, setSuccess] = useState(false); // State for success popup
   const navigate = useNavigate();
 
-<<<<<<< HEAD
-  function generateGeneratorId() {
-    return `G${Math.floor(100 + Math.random() * 900)}`;
-  }
-
-  const validateUsername = (username) => {
-    const usernameRegex = /^(?!\d)[a-zA-Z0-9_]{5,}$/;
-    return usernameRegex.test(username);
-  };
-
-=======
->>>>>>> f9db2ba7e528f7170cdbfb46b899a75bfa146c0d
   const validatePassword = (password) => {
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return strongPasswordRegex.test(password);
@@ -53,14 +36,6 @@ const RegisterGenerator = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-    if (!usernameError && !passwordError && formData.username && formData.password) {
-      console.log("Generator Registered:", formData);
-      alert(`Registration Successful! Your Generator ID: ${formData.generatorId}`);
-      navigate("/login"); // Navigate to login page
-    } else {
-      alert("Please fix errors before submitting.");
-=======
     if (passwordError || !formData.password) {
       setError("Please fix password issues.");
       return;
@@ -95,7 +70,6 @@ const RegisterGenerator = () => {
     } catch (err) {
       console.error("Registration error:", err);
       setError("Server error. Please try again later.");
->>>>>>> f9db2ba7e528f7170cdbfb46b899a75bfa146c0d
     }
   };
 
@@ -107,19 +81,6 @@ const RegisterGenerator = () => {
   ];
 
   return (
-<<<<<<< HEAD
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-green-700 to-green-400">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-96">
-        <h2 className="text-2xl font-bold text-center mb-4 text-green-700">Register as Generator</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            name="generatorId"
-            value={formData.generatorId}
-            readOnly
-            className="w-full p-2 border rounded bg-gray-200 cursor-not-allowed"
-          />
-=======
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Success Popup */}
       {success && (
@@ -130,7 +91,6 @@ const RegisterGenerator = () => {
           </div>
         </div>
       )}
->>>>>>> f9db2ba7e528f7170cdbfb46b899a75bfa146c0d
 
       {/* Header */}
       <header className="fixed top-0 w-full bg-green-600 text-white p-4 shadow-md z-10">

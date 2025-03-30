@@ -12,8 +12,10 @@ import WasteCollectionForm from './pages/WasteCollectionForm';
 import RecyclingServices from './pages/RecyclingServicesForm';
 import ConfirmationPage from './pages/ConfirmationPage';
 import Store from './pages/Store';
+import About from "./pages/About"
 import './App.css';
 import BidsPage from './pages/BidsPage';
+import Settings from './pages/Settings';
 
 // Component to determine if the sidebar should be applied
 const AppLayout = ({ children }) => {
@@ -43,11 +45,13 @@ function App() {
           <Route path="/registergenerator" element={<RegisterGenerator setUserCredentials={setUserCredentials} />} />
           <Route path="/registercollector" element={<RegisterCollector setUserCredentials={setUserCredentials} />} />
           <Route path="/selection" element={<Selection />} />
+          <Route path="/about" element={<About/>}/>
           <Route path="/WasteCollectionForm" element={<WasteCollectionForm />} />
           <Route path="/recyclingservicesform" element={<RecyclingServices />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
           <Route path="/bids" element={<BidsPage />} />
           <Route path="/store" element={<Store />} />
+          <Route path='/settings' element={<Settings/>}/>
         </Routes>
       </AppLayout>
     </Router>
