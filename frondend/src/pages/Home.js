@@ -1,6 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 import Header from '../components/Header'; 
+=======
+import Header from '../components/Header'; // Import the Header component
+>>>>>>> 4086b01f8979071d1fbe12595a07e5a006a69714
 
 const Home = () => {
   return (
