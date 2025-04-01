@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import eWasteGraphic from "../assets/e-waste-graphic.png";
+import waste from "../assets/waste.jpg";
 import eWasteBin from "../assets/e-waste-bin.png";
 
 const RegisterGenerator = () => {
@@ -111,7 +111,7 @@ const RegisterGenerator = () => {
           <div className="w-full lg:w-2/5 flex flex-col items-center">
             {/* E-Waste Graphic */}
             <div className="w-full max-w-lg mb-6">
-              <img src={eWasteGraphic} alt="E-Waste Graphic" className="w-full h-auto object-contain" />
+              <img src={waste} alt="E-Waste Graphic" className="w-full h-auto object-contain" />
             </div>
 
             {/* Quotes Section */}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 // Import images
-import eWasteGraphic from "../assets/e-waste-graphic.png";
+import waste from "../assets/waste.jpg";
 import eWasteBin from "../assets/e-waste-bin.png";
 import "./Login.css";
 
@@ -90,8 +90,8 @@ const Login = ({ userCredentials }) => {
             {/* E-Waste Graphic */}
             <div className="w-full max-w-lg mb-6">
               <img
-                src={eWasteGraphic}
-                alt="E-Waste Graphic"
+                src={waste}
+                alt="waste"
                 className="w-full h-auto object-contain"
               />
             </div>
