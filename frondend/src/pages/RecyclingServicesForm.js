@@ -194,7 +194,7 @@ const RecyclerPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="fixed top-0 w-full bg-green-600 text-white p-4 shadow-md z-10">
+      {/* <header className="fixed top-0 w-full bg-green-600 text-white p-4 shadow-md z-10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-xl md:text-2xl font-bold font-poppins">EcoSync</h1>
           <nav className="flex space-x-4">
@@ -205,7 +205,7 @@ const RecyclerPage = () => {
             <Link to="/register" className="hover:underline text-base md:text-lg font-roboto">Register</Link>
           </nav>
         </div>
-      </header>
+      </header> */}
 
       {/* Main Content */}
       <div className="flex-1 p-4 md:p-8 mt-20">
@@ -273,6 +273,8 @@ const RecyclerPage = () => {
                       <th className="p-4 text-left font-roboto text-lg">Phone Number</th>
                       <th className="p-4 text-left font-roboto text-lg">Waste Category</th>
                       <th className="p-4 text-left font-roboto text-lg">Waste Amount (kg)</th>
+                      <th class name="p-4 text-left font-roboto text-lg">Location </th>
+                     
                       <th className="p-4 text-left font-roboto text-lg">Action</th>
                     </tr>
                   </thead>
@@ -289,6 +291,7 @@ const RecyclerPage = () => {
                           <td className="p-4 font-roboto text-base">{entry.phone || 'N/A'}</td>
                           <td className="p-4 font-roboto text-base">{entry.wasteCategory || 'N/A'}</td>
                           <td className="p-4 font-roboto text-base">{entry.wasteAmount || 'N/A'}</td>
+                          <td className="p-4 font-roboto text-base">{entry.location || 'N/A'}</td>
                           <td className="p-4">
                             <button
                               onClick={() => handleBuyClick(entry)}

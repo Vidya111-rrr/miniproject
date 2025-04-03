@@ -42,7 +42,7 @@ const BidsPage = () => {
     const fetchData = async () => {
       try {
         // Fetch all bids
-        const bidsResponse = await fetch('http://localhost:4000/api/bids/test', {
+        const bidsResponse = await fetch('http://localhost:4000/api/bids', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -263,6 +263,9 @@ const BidsPage = () => {
                         <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-2">
                           
                         </h3>
+                        <p className="text-gray-700 font-roboto mb-1">
+                          <span className="font-semibold">Bidder Name:</span> {bid.bidderName}
+                          </p>
                         <p className="text-gray-700 font-roboto mb-1">
                           <span className="font-semibold">Category:</span> {bid.wasteId.wasteCategory}
                         </p>

@@ -11,6 +11,7 @@ const WasteCollectionForm = () => {
     name: '',
     email: '',
     address: '',
+    location:'',
     phone: '',
     wasteCategories: [
       { category: '', amount: '' },
