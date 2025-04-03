@@ -16,6 +16,7 @@ import About from "./pages/About"
 import './App.css';
 import BidsPage from './pages/BidsPage';
 import Settings from './pages/Settings';
+import Admin from './pages/AdminPage';
 
 // Component to determine if the sidebar should be applied
 const AppLayout = ({ children }) => {
@@ -52,6 +53,7 @@ function App() {
           <Route path="/bids" element={<BidsPage />} />
           <Route path="/store" element={<Store />} />
           <Route path='/settings' element={<Settings/>}/>
+          <Route path='/Admin' element={<Admin/>}/>
         </Routes>
       </AppLayout>
     </Router>

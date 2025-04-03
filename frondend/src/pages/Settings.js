@@ -1,3 +1,4 @@
+// pages/Settings.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
@@ -114,7 +115,10 @@ const Settings = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(passwordForm),
+        body: JSON.stringify({ 
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword,
+        }),
       });
 
       const data = await response.json();
@@ -123,63 +127,150 @@ const Settings = () => {
       }
 
       setPasswordMessage('Password updated successfully!');
+      setPasswordForm({ currentPassword: '', newPassword: '' });
     } catch (err) {
       setError(err.message);
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   return (
-    <div>
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      {/* Header */}
       <Header />
-      <div className="settings-page">
-        <h1>Settings</h1>
-        <div className="user-details">
-          <p><strong>Name:</strong> {userDetails.name}</p>
-          <p><strong>Username:</strong> {userDetails.username}</p>
-          <p><strong>Email:</strong> {userDetails.email}</p>
-          <p><strong>Role:</strong> {userDetails.role}</p>
-          <p><strong>Company:</strong> {userDetails.company}</p>
+
+      {/* Main Content */}
+      <div className="flex flex-1 flex-col items-center justify-center mt-16 p-4 md:p-8">
+        <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg w-full max-w-lg">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-green-600 font-poppins">
+            Account Settings
+          </h2>
+
+          {/* Loading and Error Messages */}
+          {loading && (
+            <p className="text-center text-gray-700 font-roboto text-lg">Loading...</p>
+          )}
+          {error && (
+            <p className="text-center bg-red-100 text-red-700 p-4 rounded-lg font-roboto text-lg mb-4">
+              {error}
+            </p>
+          )}
+
+          {!loading && !error && (
+            <>
+              {/* User Details */}
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-4">
+                  Your Details
+                </h3>
+                <p className="text-gray-700 font-roboto mb-2">
+                  <span className="font-semibold">Name:</span> {userDetails.name}
+                </p>
+                <p className="text-gray-700 font-roboto mb-2">
+                  <span className="font-semibold">Username:</span> {userDetails.username}
+                </p>
+                <p className="text-gray-700 font-roboto mb-2">
+                  <span className="font-semibold">Email:</span> {userDetails.email}
+                </p>
+                <p className="text-gray-700 font-roboto mb-2">
+                  <span className="font-semibold">Role:</span> {userDetails.role}
+                </p>
+                <p className="text-gray-700 font-roboto">
+                  <span className="font-semibold">Company:</span> {userDetails.company}
+                </p>
+              </div>
+
+              {/* Update Name Form */}
+              <div className="mb-8">
+                <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-4">
+                  Update Name
+                </h3>
+                <form onSubmit={handleNameSubmit} className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700 mb-1 font-roboto"
+                    >
+                      New Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={nameForm.name}
+                      onChange={handleNameChange}
+                      placeholder="Enter your new name"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none font-roboto"
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-all duration-300 font-semibold font-roboto"
+                  >
+                    Update Name
+                  </button>
+                </form>
+                {nameMessage && (
+                  <p className="text-center text-green-600 font-roboto mt-4">{nameMessage}</p>
+                )}
+              </div>
+
+              {/* Update Password Form */}
+              <div>
+                <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-4">
+                  Update Password
+                </h3>
+                <form onSubmit={handlePasswordSubmit} className="space-y-4">
+                  <div>
+                    <label
+                      htmlFor="currentPassword"
+                      className="block text-sm font-medium text-gray-700 mb-1 font-roboto"
+                    >
+                      Current Password
+                    </label>
+                    <input
+                      type="password"
+                      id="currentPassword"
+                      name="currentPassword"
+                      value={passwordForm.currentPassword}
+                      onChange={handlePasswordChange}
+                      placeholder="Enter your current password"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none font-roboto"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="newPassword"
+                      className="block text-sm font-medium text-gray-700 mb-1 font-roboto"
+                    >
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      id="newPassword"
+                      name="newPassword"
+                      value={passwordForm.newPassword}
+                      onChange={handlePasswordChange}
+                      placeholder="Enter your new password"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none font-roboto"
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-all duration-300 font-semibold font-roboto"
+                  >
+                    Update Password
+                  </button>
+                </form>
+                {passwordMessage && (
+                  <p className="text-center text-green-600 font-roboto mt-4">{passwordMessage}</p>
+                )}
+              </div>
+            </>
+          )}
         </div>
-
-        <form onSubmit={handleNameSubmit}>
-          <h2>Update Name</h2>
-          <input
-            type="text"
-            value={nameForm.name}
-            onChange={handleNameChange}
-            placeholder="Enter new name"
-          />
-          <button type="submit">Update Name</button>
-          {nameMessage && <p>{nameMessage}</p>}
-        </form>
-
-        <form onSubmit={handlePasswordSubmit}>
-          <h2>Update Password</h2>
-          <input
-            type="password"
-            name="currentPassword"
-            value={passwordForm.currentPassword}
-            onChange={handlePasswordChange}
-            placeholder="Enter current password"
-          />
-          <input
-            type="password"
-            name="newPassword"
-            value={passwordForm.newPassword}
-            onChange={handlePasswordChange}
-            placeholder="Enter new password"
-          />
-          <button type="submit">Update Password</button>
-          {passwordMessage && <p>{passwordMessage}</p>}
-        </form>
       </div>
     </div>
   );

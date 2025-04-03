@@ -1,95 +1,56 @@
-import React, { useRef, useEffect, useState } from "react";
-import { Home, Info, Mail, LogOut, UserPlus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const Sidebar = ({ isOpen, setIsOpen }) => {
-  const navigate = useNavigate();
-  const sidebarRef = useRef(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
-
-  useEffect(() => {
-    if (typeof setIsOpen !== "function") {
-      console.error("setIsOpen is not a function. Make sure you pass it as a prop.");
-      return;
-    }
-
-    const handleClickOutside = (event) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, setIsOpen]);
-
-  const handleSignup = () => {
-    localStorage.setItem("token", "user_token"); // Simulating signup by setting a token
-    setIsLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    navigate("/login");
-  };
+const Sidebar = ({ isOpen, closeSidebar }) => {
+  if (!isOpen) return null; // Only render if the sidebar is open
 
   return (
     <div
-      ref={sidebarRef}
-      className={`fixed top-0 left-0 h-screen w-64 bg-white shadow-md transition-transform duration-300 p-5 flex flex-col z-50 ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
+      className="sidebar"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '250px',
+        height: '100%',
+        background: '#333',
+        color: '#fff',
+        padding: '20px',
+        zIndex: 1000,
+        transition: '0.3s',
+      }}
     >
-      <div className="flex items-center gap-3 mb-5">
-        <img src="/images/logo.jpg" alt="EcoSync Logo" className="w-10 h-10 rounded-full" />
-        <h2 className="text-lg font-semibold">EcoSync</h2>
-      </div>
-      <ul className="space-y-4">
+      <button
+        onClick={closeSidebar}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: '#fff',
+          fontSize: '24px',
+          cursor: 'pointer',
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+        }}
+      >
+        ×
+      </button>
+      <ul style={{ listStyle: 'none', padding: 0 }}>
         <li>
-          <a href="/" className="flex items-center gap-3 text-gray-700 p-2 rounded-lg hover:bg-gray-200">
-            <Home size={24} />
-            <span>Home</span>
-          </a>
+          <Link to="/" style={{ color: '#fff', textDecoration: 'none' }}>Home</Link>
         </li>
         <li>
-          <a href="/about" className="flex items-center gap-3 text-gray-700 p-2 rounded-lg hover:bg-gray-200">
-            <Info size={24} />
-            <span>About</span>
-          </a>
+          <Link to="/about" style={{ color: '#fff', textDecoration: 'none' }}>About</Link>
         </li>
         <li>
-          <a href="/contact" className="flex items-center gap-3 text-gray-700 p-2 rounded-lg hover:bg-gray-200">
-            <Mail size={24} />
-            <span>Contact</span>
-          </a>
+          <Link to="/contact" style={{ color: '#fff', textDecoration: 'none' }}>Contact</Link>
         </li>
-        {isLoggedIn ? (
-          <li>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 text-gray-700 p-2 rounded-lg hover:bg-gray-200 w-full text-left"
-            >
-              <LogOut size={24} />
-              <span>Logout</span>
-            </button>
-          </li>
-        ) : (
-          <li>
-            <button
-              onClick={handleSignup}
-              className="flex items-center gap-3 text-gray-700 p-2 rounded-lg hover:bg-gray-200 w-full text-left"
-            >
-              <UserPlus size={24} />
-              <span>Signup</span>
-            </button>
-          </li>
-        )}
+        <li>
+          <Link to="/AdminPage" style={{ color: '#fff', textDecoration: 'none' }}>Admin</Link>
+        </li>
+        <li>
+          <Link to="/signin" style={{ color: '#fff', textDecoration: 'none' }}>Sign In</Link>
+        </li>
       </ul>
     </div>
   );

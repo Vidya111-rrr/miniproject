@@ -53,7 +53,7 @@ const WasteCollectionForm = () => {
     e.preventDefault();
 
     // Validate user details
-    if (!formData.name || !formData.email || !formData.address || !formData.phone) {
+    if (!formData.name || !formData.email || !formData.address || !formData.phone ) {
       toast.error('Please fill all user details (name, email, address, phone).', {
         position: 'top-right',
         autoClose: 5000,
@@ -89,6 +89,7 @@ const WasteCollectionForm = () => {
           phone: formData.phone,
           wasteCategory: entry.category,
           wasteAmount: parseFloat(entry.amount),
+          location:formData.location
         };
 
         const response = await fetch('http://localhost:4000/api/waste-collection', {
@@ -123,6 +124,7 @@ const WasteCollectionForm = () => {
         address: '',
         phone: '',
         wasteCategories: [{ category: '', amount: '' }],
+        location:'',
       });
     } catch (err) {
       toast.error(`Error: ${err.message}`, {
@@ -202,6 +204,18 @@ const WasteCollectionForm = () => {
                   type="text"
                   name="address"
                   value={formData.address}
+                  onChange={handleInputChange}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
+                  required
+                />
+              </div>
+              <div>
+                <label htmlFor="location" className="block text-gray-700 font-semibold mb-2 font-roboto">location</label>
+                <input
+                  id="location"
+                  type="text"
+                  name="location"
+                  value={formData.location}
                   onChange={handleInputChange}
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
                   required
