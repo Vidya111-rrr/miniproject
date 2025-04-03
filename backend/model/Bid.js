@@ -3,6 +3,11 @@ import mongoose from "mongoose";
 // Define the schema for bids
 const bidSchema = new mongoose.Schema(
   {
+    bidderName:
+    {
+      type: String,
+      required: true,
+    },
     bidAmount: {
       type: Number,
       required: true,

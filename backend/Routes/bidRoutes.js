@@ -2,7 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import Bid from "../model/Bid.js";
 import WasteCollection from "../model/WasteCollection.js";
-import User from "../model/User.js";
+import User from "../model/User.js"; // Import User model to fetch bidder details
 
 const router = express.Router();
 
@@ -21,6 +21,7 @@ router.post("/api/bids", async (req, res) => {
     if (!bidderEmail) {
       return res.status(400).json({ message: "Bidder email is required" });
     }
+
     if (!sellerEmail) {
       return res.status(400).json({ message: "Seller email is required" });
     }
@@ -46,6 +47,14 @@ router.post("/api/bids", async (req, res) => {
       return res.status(401).json({ message: "Invalid token: User email does not match bidder email." });
     }
 
+    // Fetch the bidder's name from the User model using the bidderEmail
+    const user = await User.findOne({ email: bidderEmail });
+    if (!user) {
+      return res.status(404).json({ message: "Bidder not found" });
+    }
+
+    const bidderName = user.name; // Assuming the 'name' field in User model stores the name
+
     // Find the waste collection entry
     const wasteCollection = await WasteCollection.findById(wasteId);
     if (!wasteCollection) {
@@ -59,6 +68,7 @@ router.post("/api/bids", async (req, res) => {
 
     // Create a new bid
     const bid = new Bid({
+      bidderName,
       bidAmount,
       bidderEmail,
       sellerEmail,
@@ -75,55 +85,21 @@ router.post("/api/bids", async (req, res) => {
   }
 });
 
-// GET /api/bids - Retrieve all bids (optionally filtered by the logged-in user)
+// GET /api/bids - Retrieve all bids with bidder names
 router.get("/api/bids", async (req, res) => {
   try {
-    // Extract token from Authorization header
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ message: "Access denied. No token provided." });
-    }
+    // Fetch all bids and populate the wasteId field with waste details
+    const bids = await Bid.find()
+      .populate("wasteId", "name email address phone wasteCategory wasteAmount") // Populate waste collection details
+      .populate("bidderEmail", "name") // Populate bidder's name using the email
+      .exec();
 
-    // Decode the token
-    let decoded;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
-      console.log("Decoded Token (GET):", decoded); // Debug: Log the decoded token
-    } catch (error) {
-      console.error("Token verification error (GET):", error);
-      return res.status(401).json({ message: "Invalid token", error: error.message });
-    }
-
-    // Ensure the decoded token has a user ID
-    if (!decoded.userId) {
-      return res.status(401).json({ message: "Invalid token: Missing user ID." });
-    }
-
-    // If the user wants to see only their own bids, you can add a query parameter (e.g., ?myBids=true)
-    const myBids = req.query.myBids === "true";
-
-    // Filter bids by bidderEmail if myBids is true
-    const query = myBids ? { bidderEmail: decoded.username } : {};
-    const bids = await Bid.find(query).populate("wasteId", "name email address phone wasteCategory wasteAmount");
-
+    // Return the bids with populated waste and bidder details
     res.status(200).json(bids);
   } catch (error) {
-    console.error("Error fetching bids:", error);
+    console.error("Error fetching all bids:", error);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
-
-router.get("/api/bids/test", async (req, res) => {
-    try {
-      // Fetch all bids and populate the wasteId field with waste details
-      const bids = await Bid.find().populate("wasteId", "name email address phone wasteCategory wasteAmount");
-  
-      // Return the bids with populated waste details
-      res.status(200).json(bids);
-    } catch (error) {
-      console.error("Error fetching all bids:", error);
-      res.status(500).json({ message: "Server error", error: error.message });
-    }
-  });
 
 export default router;

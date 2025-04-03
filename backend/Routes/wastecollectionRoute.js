@@ -9,7 +9,7 @@ const router = express.Router();
 // ✅ Create a new waste collection request (single waste category)
 router.post("/api/waste-collection", async (req, res) => {
   try {
-    const { name, email, address, phone, wasteCategory, wasteAmount } = req.body;
+    const { name, email, address, location,phone, wasteCategory, wasteAmount } = req.body;
 
     // ✅ Validate input
     if (!name || !email || !address || !phone || !wasteCategory || !wasteAmount) {
@@ -25,6 +25,7 @@ router.post("/api/waste-collection", async (req, res) => {
       name,
       email,
       address,
+      location,
       phone,
       wasteCategory,
       wasteAmount,

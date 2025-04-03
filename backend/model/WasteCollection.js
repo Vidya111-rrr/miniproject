@@ -16,6 +16,11 @@ const wasteCollectionSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    location:{
+        type : String,
+        required :true,
+     
+    },
     phone: {
       type: String,
       required: true,

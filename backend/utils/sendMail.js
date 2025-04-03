@@ -36,8 +36,6 @@ const sendMail = async (to, subject, text) => {
   }
 };
 
+//sendMail("to_email.com", 'subject', 'text');
 
-// uncomment below to test the functionlty , make sure to comment it back after testing , update the email address to your  another email address and remove the comment after proper working
-//sendMail("toemail.com", 'subject', 'text');
-sendMail('dhanyakrishnan284@gmail.com','HELLO','This is test mail');
 export default sendMail;
