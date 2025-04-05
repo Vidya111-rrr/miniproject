@@ -17,11 +17,11 @@ import './App.css';
 import BidsPage from './pages/BidsPage';
 import Settings from './pages/Settings';
 import Admin from './pages/AdminPage';
-
-// Component to determine if the sidebar should be applied
+import ProtectedRoute from './components/ProtectedRoutes';
+// Layout wrapper to include Header/Footer conditionally
 const AppLayout = ({ children }) => {
   const location = useLocation();
-  const sidebarPaths = ['/store', '/WasteCollectionForm', '/recyclingservicesform', '/confirmation']; // Add paths that need the sidebar
+  const sidebarPaths = ['/store', '/WasteCollectionForm', '/recyclingservicesform', '/confirmation'];
   const hasSidebar = sidebarPaths.includes(location.pathname);
 
   return (
@@ -46,14 +46,46 @@ function App() {
           <Route path="/registergenerator" element={<RegisterGenerator setUserCredentials={setUserCredentials} />} />
           <Route path="/registercollector" element={<RegisterCollector setUserCredentials={setUserCredentials} />} />
           <Route path="/selection" element={<Selection />} />
-          <Route path="/about" element={<About/>}/>
-          <Route path="/WasteCollectionForm" element={<WasteCollectionForm />} />
-          <Route path="/recyclingservicesform" element={<RecyclingServices />} />
+          <Route path="/about" element={<About />} />
+          
+          {/* Protected Routes based on roles */}
+          <Route
+            path="/WasteCollectionForm"
+            element={
+              <ProtectedRoute allowedRoles={['generator']}>
+                <WasteCollectionForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/recyclingservicesform"
+            element={
+              <ProtectedRoute allowedRoles={['wastecollector']}>
+                <RecyclingServices />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/Admin"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/bids"
+            element={
+              <ProtectedRoute allowedRoles={['generator']}>
+                <BidsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/*  Common pages */}
           <Route path="/confirmation" element={<ConfirmationPage />} />
-          <Route path="/bids" element={<BidsPage />} />
           <Route path="/store" element={<Store />} />
-          <Route path='/settings' element={<Settings/>}/>
-          <Route path='/Admin' element={<Admin/>}/>
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </AppLayout>
     </Router>

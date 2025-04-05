@@ -42,6 +42,7 @@ const Login = () => {
       if (response.ok) {
         // Store the token in local storage
         localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
 
         // Navigate based on user role
         const role = data.role;
