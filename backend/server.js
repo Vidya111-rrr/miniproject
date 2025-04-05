@@ -7,6 +7,7 @@ import loginRoute from "./Routes/loginRoute.js";
 import registerRoute from "./Routes/registerRoute.js";
 import bidRoutes from "./Routes/bidRoutes.js"
 import userRoutes from "./Routes/userRoutes.js";
+import adminRoute from "./Routes/adminRoute.js";
 
 dotenv.config();  //used for storing sensitive datas 
 
@@ -25,6 +26,7 @@ app.use("/api/register",registerRoute);
 app.use(wastecollectionRoute);
 app.use(userRoutes);
 app.use("/", bidRoutes);
+app.use("/api",adminRoute);
 
   
 app.listen(PORT, () => {
