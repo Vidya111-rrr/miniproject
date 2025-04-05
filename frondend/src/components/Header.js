@@ -19,23 +19,6 @@ const Header = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  const renderCommonLinks = () => (
-    <>
-      <li>
-        <a href="/" className={isActive('/') ? 'nav-label active' : 'nav-label'}>Home</a>
-      </li>
-      <li>
-        <a href="/about" className={isActive('/about') ? 'nav-label active' : 'nav-label'}>About</a>
-      </li>
-      <li>
-        <a href="/settings" className={isActive('/settings') ? 'nav-label active' : 'nav-label'}>Settings</a>
-      </li>
-      <li>
-        <button onClick={handleLogout} className="nav-label">Logout</button>
-      </li>
-    </>
-  );
-
   return (
     <header className="header" style={{ padding: '15px 30px', height: '80px' }}>
       <div className="header-content" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto' }}>
@@ -55,6 +38,14 @@ const Header = () => {
 
         <nav>
           <ul className="nav-list" style={{ display: 'flex', gap: '20px' }}>
+            {/* Always visible */}
+            <li>
+              <a href="/" className={isActive('/') ? 'nav-label active' : 'nav-label'}>Home</a>
+            </li>
+            <li>
+              <a href="/about" className={isActive('/about') ? 'nav-label active' : 'nav-label'}>About</a>
+            </li>
+
             {!isLoggedIn ? (
               <>
                 <li>
@@ -66,7 +57,7 @@ const Header = () => {
               </>
             ) : (
               <>
-                {/* Role-specific links */}
+                {/* Role-specific */}
                 {userRole === 'admin' && (
                   <li>
                     <a href="/Admin" className={isActive('/Admin') ? 'nav-label active' : 'nav-label'}>Users</a>
@@ -88,8 +79,13 @@ const Header = () => {
                   </li>
                 )}
 
-                {/* Common to all roles */}
-                {renderCommonLinks()}
+                {/* Common for all logged-in users */}
+                <li>
+                  <a href="/settings" className={isActive('/settings') ? 'nav-label active' : 'nav-label'}>Settings</a>
+                </li>
+                <li>
+                  <button onClick={handleLogout} className="nav-label">Logout</button>
+                </li>
               </>
             )}
           </ul>
