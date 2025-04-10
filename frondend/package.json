@@ -1,31 +1,46 @@
 {
-  "name": "first-project",
+  "name": "merged-project",
   "version": "1.0.0",
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "private": true,
+  "description": "Combined React project from password-reset and first-project.",
   "main": "index.js",
-  "dependencies": {
-    "ajv": "^8.17.1",
-    "ajv-keywords": "^5.1.0",
-    "cors": "^2.8.5",
-    "framer-motion": "^12.5.0",
-    "jwt-decode": "^4.0.0",
-    "lucide-react": "^0.479.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-router-dom": "^7.1.5",
-    "react-scripts": "^5.0.1",
-    "react-toastify": "^11.0.5",
-    "web-vitals": "^4.2.4"
-  },
   "scripts": {
     "start": "react-scripts start --host 0.0.0.0",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "dependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "ajv": "^8.17.1",
+    "ajv-keywords": "^5.1.0",
+    "axios": "^1.8.4",
+    "bcryptjs": "^3.0.2",
+    "chalk": "^5.4.1",
+    "cors": "^2.8.5",
+    "framer-motion": "^12.5.0",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.479.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^7.5.0",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^11.0.5",
+    "web-vitals": "^4.2.4"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "tailwindcss": "^3.4.17"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -37,9 +52,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "tailwindcss": "^3.4.17"
   }
 }

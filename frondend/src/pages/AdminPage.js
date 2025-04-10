@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 
 const Admin = () => {
-  const navigate = useNavigate();
   const [generatorUsers, setGeneratorUsers] = useState([]);
   const [collectorUsers, setCollectorUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch all users from the API
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -21,12 +18,14 @@ const Admin = () => {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to fetch users.');
+          if (response.status === 404) {
+            throw new Error('API endpoint not found. Please check the server at http://localhost:4000.');
+          }
+          const errorData = await response.text();
+          throw new Error(`Failed to fetch users: ${errorData || response.statusText}`);
         }
 
         const users = await response.json();
-        // Filter users into generators and collectors
         const generators = users.filter(user => user.role === 'generator');
         const collectors = users.filter(user => user.role === 'wastecollector');
         setGeneratorUsers(generators);
@@ -41,7 +40,6 @@ const Admin = () => {
     fetchUsers();
   }, []);
 
-  // Handle user deletion
   const handleDeleteUser = async (userId) => {
     try {
       const response = await fetch(`http://localhost:4000/api/admin/users/${userId}`, {
@@ -56,7 +54,6 @@ const Admin = () => {
         throw new Error(errorData.message || 'Failed to delete user.');
       }
 
-      // Update the state to remove the deleted user
       setGeneratorUsers(generatorUsers.filter(user => user._id !== userId));
       setCollectorUsers(collectorUsers.filter(user => user._id !== userId));
       alert('User deleted successfully!');
@@ -84,6 +81,9 @@ const Admin = () => {
           <p className="text-center bg-red-100 text-red-700 p-4 rounded-lg font-roboto text-lg">
             {error}
           </p>
+          <p className="text-center text-gray-600 font-roboto text-sm mt-2">
+            (The backend server may not be running. Please start it at http://localhost:4000.)
+          </p>
         </div>
       </div>
     );
@@ -91,21 +91,14 @@ const Admin = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Header */}
       <Header />
-
-      {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-start mt-16 p-4 md:p-8">
         <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg w-full max-w-4xl">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-green-600 font-poppins">
             Admin Dashboard
           </h2>
-
-          {/* Generator Users Section */}
           <div className="mb-8">
-            <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-4">
-              Generator Users
-            </h3>
+            <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-4">Generator Users</h3>
             {generatorUsers.length === 0 ? (
               <p className="text-center text-gray-700 font-roboto">No generator users found.</p>
             ) : (
@@ -142,12 +135,8 @@ const Admin = () => {
               </div>
             )}
           </div>
-
-          {/* Collector Users Section */}
           <div>
-            <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-4">
-              Collector Users
-            </h3>
+            <h3 className="text-xl font-semibold text-gray-800 font-poppins mb-4">Collector Users</h3>
             {collectorUsers.length === 0 ? (
               <p className="text-center text-gray-700 font-roboto">No collector users found.</p>
             ) : (

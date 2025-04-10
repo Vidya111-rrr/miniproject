@@ -8,7 +8,7 @@ const RegisterGenerator = () => {
     name: "",
     email: "",
     password: "",
-    company: "",
+    
   });
   const [passwordError, setPasswordError] = useState("");
   const [error, setError] = useState("");
@@ -53,7 +53,7 @@ const RegisterGenerator = () => {
           email: formData.email,
           password: formData.password,
           role: "generator",
-          company: formData.company,
+          
         }),
       });
 
@@ -183,22 +183,6 @@ const RegisterGenerator = () => {
                     required
                     onChange={handleChange}
                     value={formData.email}
-                  />
-                </div>
-
-                {/* Company Input */}
-                <div>
-                  <label htmlFor="company" className="block text-base font-medium text-gray-700 mb-1 font-roboto">
-                    Company (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    name="company"
-                    id="company"
-                    placeholder="Enter your company name"
-                    className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none font-roboto text-base"
-                    onChange={handleChange}
-                    value={formData.company}
                   />
                 </div>
 

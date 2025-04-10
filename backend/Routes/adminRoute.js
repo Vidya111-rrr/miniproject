@@ -5,8 +5,7 @@ const router = express.Router();
 
 // Admin route to get all users
 // Endpoint: GET /api/admin/users
-// Description: Fetches all users from the database (publicly accessible)
-router.get('/admin/users', async (req, res) => {
+router.get('/users', async (req, res) => { // Changed from '/admin/users' to '/users'
   try {
     const users = await User.find({});
     res.status(200).json(users);
@@ -18,8 +17,7 @@ router.get('/admin/users', async (req, res) => {
 
 // Admin route to delete a user
 // Endpoint: DELETE /api/admin/users/:id
-// Description: Deletes a user by their ID (publicly accessible)
-router.delete('/admin/users/:id', async (req, res) => {
+router.delete('/users/:id', async (req, res) => { // Changed from '/admin/users/:id' to '/users/:id'
   try {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {

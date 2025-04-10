@@ -9,8 +9,6 @@ const __dirname = dirname(__filename);
 
 // Load .env from the root directory
 dotenv.config({ path: join(__dirname, '../.env') });
-console.log(process.env.EMAIL_USER);
-console.log(process.env.EMAIL_PASS);
 
 const sendMail = async (to, subject, text) => {
   try {
@@ -18,24 +16,27 @@ const sendMail = async (to, subject, text) => {
       service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false, // Temporary bypass for self-signed certificate
+      },
     });
 
     let mailOptions = {
       from: process.env.EMAIL_USER,
       to: to,
       subject: subject,
-      text: text
+      text: text,
     };
 
     let info = await transporter.sendMail(mailOptions);
     console.log('Email sent: ' + info.response);
+    return info;
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Error sending email:', error.message);
+    throw error;
   }
 };
-
-//sendMail("to_email.com", 'subject', 'text');
 
 export default sendMail;

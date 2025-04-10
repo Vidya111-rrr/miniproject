@@ -172,14 +172,6 @@ const Login = () => {
               Log In
             </button>
 
-            {/* Login with OTP */}
-            <button
-              type="button"
-              className="w-full border border-green-600 text-green-600 p-3 rounded-lg hover:bg-green-50 transition-all duration-300"
-            >
-              Login with OTP
-            </button>
-
             {/* Register Link */}
             <p className="text-center text-gray-700 text-sm">
               Don’t have an account?{" "}

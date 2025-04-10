@@ -11,6 +11,8 @@ import Selection from './pages/Selection';
 import WasteCollectionForm from './pages/WasteCollectionForm';
 import RecyclingServices from './pages/RecyclingServicesForm';
 import ConfirmationPage from './pages/ConfirmationPage';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import Store from './pages/Store';
 import About from "./pages/About"
 import './App.css';
@@ -46,6 +48,10 @@ function App() {
           <Route path="/registergenerator" element={<RegisterGenerator setUserCredentials={setUserCredentials} />} />
           <Route path="/registercollector" element={<RegisterCollector setUserCredentials={setUserCredentials} />} />
           <Route path="/selection" element={<Selection />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+
           <Route path="/about" element={<About />} />
           
           {/* Protected Routes based on roles */}

@@ -1,6 +1,6 @@
 import express from "express";
 import User from  "../model/User.js"
-import bcrypt from "bcryptjs"; // Import bcrypt for password comparison
+import bcrypt from 'bcryptjs'; 
 import jwt from "jsonwebtoken"; // Import jwt for token generation
 
 const router = express.Router();
